@@ -42,6 +42,10 @@ ExportedObj/
 *.pidb
 *.booproj
 *.svd
+
+
+.idea/
+.DS_Store
 *.pdb
 *.mdb
 *.opendb
