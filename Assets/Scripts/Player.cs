@@ -5,9 +5,41 @@ using UnityEngine;
 public class Player : MonoBehaviour {
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private GameInput gameInput;
+    [SerializeField] private LayerMask countersLayerMask;
+
     private bool isWalking;
+    private Vector3 lastInteractDir;
 
     private void Update() {
+        HandleMovement();
+        HandleInteractions();
+    }
+
+    public bool IsWalking() {
+        return isWalking;
+    }
+
+    private void HandleInteractions() {
+        var inputVector = gameInput.GetMovementVectorNormalized();
+        var moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+
+        if (moveDir != Vector3.zero) {
+            lastInteractDir = moveDir;
+        }
+
+        var interactDistance = 2f;
+        // raycastHit is returned with data on hit
+        if (Physics.Raycast(transform.position, lastInteractDir, out var raycastHit,
+                interactDistance, countersLayerMask)) {
+            // TryGetComponent() handles null
+            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter)) {
+                // Has ClearCounter
+                clearCounter.Interact();
+            }
+        }
+    }
+
+    private void HandleMovement() {
         var inputVector = gameInput.GetMovementVectorNormalized();
         var moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
 
@@ -56,9 +88,5 @@ public class Player : MonoBehaviour {
         isWalking = moveDir != Vector3.zero;
         var rotateSpeed = 10f;
         transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * rotateSpeed);
-    }
-
-    public bool IsWalking() {
-        return isWalking;
     }
 }
