@@ -19,7 +19,7 @@ public class KitchenObject : MonoBehaviour {
 
         this.kitchenObjectParent = kitchenObjectParent;
 
-        if (kitchenObjectParent.HasKitchenOjbect()) {
+        if (kitchenObjectParent.HasKitchenObject()) {
             // Safety check
             Debug.Log("IKitchenObjectParent already has a KitchenObject!");
         }
